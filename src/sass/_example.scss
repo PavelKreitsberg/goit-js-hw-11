@@ -1,19 +1,79 @@
-.example {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  line-height: 1.5;
-  background-color: #fff;
-  color: #2f2f37;
-  max-width: 960px;
-  padding: 16px;
+.section {
+  display: flex;
+  justify-content: center;
+  padding: 15px;
+  background-color: #0b698B;
 }
 
-.example code {
-  font-family: monospace;
-  font-size: 16px;
-  font-weight: 700;
-  background-color: #ff6b0a;
-  color: #fff;
-  padding: 2px 6px;
-  border-radius: 2px;
+.search-form {
+  display: flex;
+  flex-direction: row;  
+}
+
+input {
+  width: 280px;
+  padding: 8px;
+
+  
+  border: none;
+  border-right: 1px solid #0b698B;
+  border-radius: 4px;
+}
+
+.search-form button {
+  width: 35px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  border-radius: 4px;
+
+  background-image: url(../images/search.svg);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 20px 20px;
+
+  background-color: #fff;
+}
+
+.load-more {
+    display: block;
+    align-items: center;
+    border: none;
+    outline: none;
+  
+    padding: 6px 10px;
+    margin: 20px auto;
+  
+    color: white;
+    font-family: inherit;
+    font-size: 16px;
+    line-height: 1.88;
+    letter-spacing: 0.06em;
+  
+    background-color: #0b698B;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15);
+    border-radius: 4px;
+  
+    cursor: pointer;
+  
+    &:hover,
+    &:focus {
+      background-color: #0f98ca;
+  }
+}
+
+.gallery {
+  margin: 0 auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.photo-link {
+  text-decoration: none;
+  color: inherit;
 }
