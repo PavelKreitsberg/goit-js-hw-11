@@ -46,15 +46,14 @@ const createRequest = (evt) => {
             showNotification('failure');
             return;
         }
-
-        refs.loadmoreBtn.classList.remove('visually-hidden')
+        
         refs.gallery.innerHTML = createCardsMarkup(res.hits);
+        refs.loadmoreBtn.classList.remove('visually-hidden')
         showNotification('success', res.totalHits);
+        const lightbox = new SimpleLightbox('.gallery a', { captionsData: 'alt', captionPosition: 'bottom', captionDelay: 250 })
 })
 
 }
-
-
 
 
 refs.form.addEventListener('submit', createRequest)
@@ -79,4 +78,4 @@ refs.form.addEventListener('submit', createRequest)
 
 
 
-// const lightbox = new SimpleLightbox('.gallery a', { captionsData: 'alt', captionPosition: 'bottom', captionDelay: 250 })
+
