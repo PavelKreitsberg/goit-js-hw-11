@@ -1,8 +1,18 @@
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import createCardsMarkup from './template/card-photo.hbs';
+import axios from "axios";
+
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
-import createCardsMarkup from './template/card-photo.hbs';
-import { fetchImages } from './js/fetchApi';
+
+
+const getImages = (query, page) => {
+    const key = '29439492-1518c1b443fd85c1e4954e288';
+
+    const BASE_URL = 'https://pixabay.com/api/'
+
+    return axios.get(`${BASE_URL}?key=${key}&q=${query}&image_type=photo&orientation=horizontal&safesearch=true&page=${page}&per_page=40`).then(res => res.data)
+}
 
 const refs = {
     form: document.querySelector('form'),
@@ -11,6 +21,16 @@ const refs = {
     loadMoreBtn: document.querySelector('.load-more')
 }
 
+let page = 1;
+let searchQuery = '';
+
+const hideLoadMoreBtn = () => {
+    refs.loadMoreBtn.classList.add('visually-hidden');
+}
+
+const showLoadMoreBtn = () => {
+    refs.loadMoreBtn.classList.remove('visually-hidden');
+}
 
 const showNotification = (status, amount) => {
     if (status === 'failure') {
@@ -28,54 +48,62 @@ const showNotification = (status, amount) => {
     }
 }
 
-const createRequest = (evt) => {
-    evt.preventDefault();    
+const renderImagesList = (evt) => {
+    evt.preventDefault();
+    hideLoadMoreBtn();
+    
+    page = 1;
 
-    const searchQuery = evt.target.searchQuery.value
+    refs.gallery.innerHTML = '';
+
+    searchQuery = evt.target.searchQuery.value;
 
     if (!searchQuery) {
         showNotification('empty');
         return;
     }
+    
 
-    refs.gallery.innerHTML = '';
+    getImages(searchQuery, page).then(res => {        
 
-    fetchImages(searchQuery).then(res => {
-        if (!res.hits[0]) {
-            refs.loadMoreBtn.classList.add('visually-hidden');
+        if (!res.hits[0]) {            
             showNotification('failure');
             return;
         }
-        
-        refs.gallery.innerHTML = createCardsMarkup(res.hits);
-        refs.loadMoreBtn.classList.remove('visually-hidden')
+
+        refs.gallery.insertAdjacentHTML('beforeend', createCardsMarkup(res.hits));
         showNotification('success', res.totalHits);
         const lightbox = new SimpleLightbox('.gallery a', { captionsData: 'alt', captionPosition: 'bottom', captionDelay: 250 })
-})
 
+        if (res.hits.length <= 40) {
+            return;
+        }        
+        
+        showLoadMoreBtn()       
+    })
+}
+
+const addMoreImages = () => {
+    page += 1;
+
+    getImages(searchQuery, page).then(res => {        
+        
+        refs.gallery.insertAdjacentHTML('beforeend', createCardsMarkup(res.hits));
+
+        const lightbox = new SimpleLightbox('.gallery a', { captionsData: 'alt', captionPosition: 'bottom', captionDelay: 250 })
+
+        if (res.totalHits === refs.gallery.childElementCount) {
+            hideLoadMoreBtn();
+            showNotification('end')
+            return;
+        }
+
+        showLoadMoreBtn();
+        showNotification('success', res.totalHits);
+})
 }
 
 
-refs.form.addEventListener('submit', createRequest)
+refs.form.addEventListener('submit', renderImagesList)
 
-
-// const params = [{
-//     webformatURL: "https://pixabay.com/get/g196ce78e8dd3b8ed8d478a4ef28e2c1f8835d5dc9a293c46663ed3bf70a80d091eec61c53e7c3b6f09e88db92033e25a_640.jpg",
-//     largeImageURL: "https://pixabay.com/get/g4eb48e54ff2e871f4bd76be0e63d1167b8da05cba234d633455daa89ff105ff90c82f169073b055d9e8dcbb474f2d1fc192cd67dd5269309759818174a663268_1280.jpg",
-//     tags: "tree, cat, silhouette",
-//     likes: 2559,
-//     views: 998633,
-//     comments: 486,
-//     downloads: 484481,
-// }]
-
-
-
-
-
-
-
-
-
-
-
+refs.loadMoreBtn.addEventListener('click', addMoreImages)
