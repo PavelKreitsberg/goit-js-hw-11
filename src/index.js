@@ -75,7 +75,7 @@ const renderImagesList = (evt) => {
         showNotification('success', res.totalHits);
         const lightbox = new SimpleLightbox('.gallery a', { captionsData: 'alt', captionPosition: 'bottom', captionDelay: 250 })
 
-        if (res.hits.length <= 40) {
+        if (res.hits.length < 40) {
             return;
         }        
         
