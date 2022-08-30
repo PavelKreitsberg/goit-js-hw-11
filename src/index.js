@@ -8,7 +8,7 @@ const refs = {
     form: document.querySelector('form'),
     input: document.querySelector('input'),
     gallery: document.querySelector('.gallery'),
-    loadmoreBtn: document.querySelector('.load-more')
+    loadMoreBtn: document.querySelector('.load-more')
 }
 
 
@@ -41,14 +41,14 @@ const createRequest = (evt) => {
     refs.gallery.innerHTML = '';
 
     fetchImages(searchQuery).then(res => {
-        console.log(res);
         if (!res.hits[0]) {
+            refs.loadMoreBtn.classList.add('visually-hidden');
             showNotification('failure');
             return;
         }
         
         refs.gallery.innerHTML = createCardsMarkup(res.hits);
-        refs.loadmoreBtn.classList.remove('visually-hidden')
+        refs.loadMoreBtn.classList.remove('visually-hidden')
         showNotification('success', res.totalHits);
         const lightbox = new SimpleLightbox('.gallery a', { captionsData: 'alt', captionPosition: 'bottom', captionDelay: 250 })
 })
